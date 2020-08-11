@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.TwoboardMapper">
+    <!-- 创建课程(Create) -->
+	<insert id="addTwoboard" parameterType="com.ye.domain.TwoboardBean">
+		insert into
+		twoboard(two_title,two_teacher_id,two_teacher_name,two_teacher_headpicurl,two_one_id,two_profile)
+		values(#{two_title},#{two_teacher_id},#{two_teacher_name},#{two_teacher_headpicurl},#{two_one_id},#{two_profile})
+	</insert>
+
+	<!-- 删除课程(Remove) -->
+	<delete id="deleteTwoboard" parameterType="int">
+		delete from twoboard
+		where two_id=#{two_id}
+	</delete>
+
+	<!-- 教师修改课程信息(Update) -->
+	<update id="updateTwoboard" parameterType="com.ye.domain.TwoboardBean">
+		update twoboard set
+		two_title=#{two_title},two_profile=#{two_profile}
+		where two_id=#{two_id}
+	</update>
+	
+	<!-- 管理员根据课程ID修改课程负责人(Update) -->
+	<update id="updateTwoboard_two_id" parameterType="com.ye.domain.TwoboardBean">
+		update twoboard set
+		two_teacher_id=#{two_teacher_id},two_teacher_name=#{two_teacher_name}
+		where two_id=#{two_id}
+	</update>
+	
+	<!-- 管理员更改个人信息同时更改课程表中教师姓名 -->
+	<update id="updateTwoboard_two_name">
+		UPDATE twoboard SET
+		two_teacher_name = #{two_teacher_name} WHERE two_teacher_id = #{two_teacher_id}
+	</update>	
+	
+	<!-- 根据课程名查询指定课程 -->
+	<select id="getTwoboardtitle" parameterType="com.ye.domain.TwoboardBean"
+		resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard where two_title like '%' #{two_title} '%'
+	</select>
+	
+	<!-- 根据教师查课程 -->
+	<select id="getTwoboardteacher" parameterType="com.ye.domain.TwoboardBean"
+		resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard where two_teacher_name like '%' #{two_teacher_name} '%'
+	</select>
+	
+	<!-- 根据教师id查课程 -->
+	<select id="getTwoboardteacher_id" parameterType="com.ye.domain.TwoboardBean"
+		resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard where two_teacher_id= #{two_teacher_id} order by two_teacher_id limit #{start},#{end}
+	</select>
+	<!-- 根据教师id查课程总数 -->
+	<select id="getTwoboardTeacherIdTotal" resultType="int">
+	    select count(*) from twoboard where two_teacher_id = #{two_teacher_id}
+	</select>
+	
+	<!-- 根据专业id查课程 -->
+	<select id="getTwoboardone_id"
+		resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard where two_one_id =#{twoOneId} order by two_one_id desc LIMIT #{start},#{end}
+	</select>
+	<!-- 统计专业课程数 -->
+	<select id="getTwoIdTotalByOneId" resultType="int">
+	    select count(*) from twoboard where two_one_id = #{two_one_id}
+	</select>
+	
+	<!-- 根据课程id查课程 -->
+	<select id="getTwoboardtwo_id" parameterType="com.ye.domain.TwoboardBean"
+		resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard where two_id =#{two_id}
+	</select>
+	
+	<!-- 查询全部课程-->
+	<select id="getAllTwoboard" resultType="com.ye.domain.TwoboardBean">
+		select * from twoboard order by two_id limit #{start},#{end}
+	</select>
+	<!-- 查询全部课程总数量 -->
+	<select id="getAllTwoboardTotal" resultType="int">
+	    select count(*) from twoboard
+	</select>
+	<!-- 统计并修改课程评论数(Update) -->
+	<update id="update_two_statistics" parameterType="com.ye.domain.TwoboardBean">
+		UPDATE twoboard SET twoboard.two_statistics = (SELECT COUNT(*) FROM `comment` WHERE 
+		`comment`.comment_two_id = twoboard.two_id GROUP BY `comment`.comment_two_id) 
+		WHERE twoboard.two_id in (
+		SELECT `comment`.comment_two_id FROM `comment` GROUP BY `comment`.comment_two_id)
+	</update>
+	
+	<select id="two_statistics_five" resultType="com.ye.domain.TwoboardBean">
+	SELECT * FROM twoboard WHERE two_id in
+    (select t.two_id from (SELECT COUNT(*) AS two_statistics,comment_two_id two_id FROM comment GROUP BY comment_two_id HAVING two_statistics ORDER BY two_statistics DESC  LIMIT 5)as t)
+    ORDER BY field(two_id,'t.two_id')
+	</select>
+	<!-- 统计评论总数前10的课程-->
+	<select id="two_ten" resultType="com.ye.domain.TwoboardBean">
+		SELECT * from twoboard where two_update_time ORDER BY two_update_time DESC LIMIT 10
+	</select>
+</mapper>

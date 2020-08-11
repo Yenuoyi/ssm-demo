@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.StatisticsMapper">
+    
+    <!-- 统计一周内评论数 -->
+    <select id="commentCount" resultType="int">
+        SELECT count(*) FROM `comment`  where comment_createtime 
+        BETWEEN DATE_SUB(NOW(),INTERVAL 7 DAY) AND NOW()
+    </select>
+    
+    <!-- 统计一周内最热门的前五课程 -->
+    <select id="twoCount" resultType="com.ye.domain.TwoboardBean">
+        SELECT * FROM twoboard where two_id in(
+        SELECT comment_two_id FROM(
+        SELECT count(*) co, comment_two_id FROM `comment` WHERE comment_createtime 
+        BETWEEN DATE_SUB(NOW(),INTERVAL 7 DAY) AND NOW() GROUP BY `comment`.comment_two_id 
+        ORDER BY co DESC LIMIT 5) as newtable)
+    </select>
+    
+    <!-- 统计一周内最热门的前五专题 -->
+    <select id="threeCount" resultType="com.ye.domain.ThreeboardBean">
+        SELECT * FROM threeboard where three_id in(
+        SELECT comment_three_id FROM(
+        SELECT count(*) co, comment_three_id FROM `comment` WHERE comment_createtime 
+        BETWEEN DATE_SUB(NOW(),INTERVAL 7 DAY) AND NOW() GROUP BY `comment`.comment_three_id  
+        ORDER BY co DESC LIMIT 5) as newtable)
+    </select>
+    
+    <!-- 统计一周内回答次数最多的前五教师id以及评论数-->
+    <select id="teacherCountByCount" resultType="com.ye.domain.CommentBean">
+        SELECT count(*) comment_content, comment_name_id FROM `comment` WHERE comment_createtime 
+        BETWEEN DATE_SUB(NOW(),INTERVAL 7 DAY) AND NOW() AND roleid =1 GROUP BY `comment`.comment_name_id 
+        ORDER BY comment_name_id LIMIT 5
+    </select>
+    <!-- 获取统计一周内回答次数最多的前五教师详细信息 -->
+    <select id="teacherCountBDetail" resultType="com.ye.domain.UserBean">
+        SELECT * FROM users where id in
+        <foreach collection="list" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

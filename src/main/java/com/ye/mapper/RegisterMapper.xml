@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.RegisterMapper">
+    <!-- 创建注册请求(Create) -->
+	<insert id="addRegister" parameterType="com.ye.domain.UserBean">
+		insert into register(name,password,professional,iphone,email,code) values(#{name},#{password},#{professional},#{iphone},#{email},#{code})
+	</insert>
+
+	<!-- 删除注册请求(Delete) -->
+	<update id="deleteRegisterById" parameterType="com.ye.domain.UserBean">
+		delete from register 
+		where id=#{id}
+	</update>
+	
+	<!-- 根据id查询单个用户 -->
+	<select id="getRegisterByid" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from register where id=#{id}
+	</select>
+	
+	<!-- 根据邮箱查询单个用户 -->
+	<select id="getRegisterByEmail" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from register where email=#{email}
+	</select>
+	
+	<!-- 查询全部用户 -->
+	<select id="getAllRegister" resultType="com.ye.domain.UserBean">
+		select * from register
+	</select>
+	
+	<!-- 更新注册请求(Update) -->
+	<update id="updateRegister" parameterType="com.ye.domain.UserBean">
+		update register set
+		name=#{name},email=#{email},iphone=#{iphone},professional=#{professional},password=#{password},
+		code=#{code} where email=#{email}
+	</update>
+	
+</mapper>

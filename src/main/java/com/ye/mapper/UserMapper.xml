@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.UserMapper">
+    
+    <!-- 创建用户(Create) -->
+	<insert id="addUser" parameterType="com.ye.domain.UserBean">
+		insert into users(name,password,roleid,professional,iphone,email,create_time) values(#{name},#{password},#{roleid},#{professional},#{iphone},#{email},#{create_time})
+	</insert>
+
+	<!-- 删除用户(Delete) -->
+	<update id="deleteUserByEmail">
+		delete from users 
+		where email=#{email}
+	</update>
+	
+	<!-- 修改用户基本资料(Update) -->
+	<update id="updateUser" parameterType="com.ye.domain.UserBean">
+		update users set 
+		name=#{name},iphone=#{iphone},professional=#{professional} where email=#{email}
+	</update>
+	
+	<!-- 修改密码(Update) -->
+	<update id="updateUser_password">
+		update users set
+		password=#{password} where email=#{email}
+	</update>
+	
+	<!-- 修改头像地址(Update) -->
+	<update id="updateUser_headpicurl">
+		update users set
+		headpicurl=#{headpicurl} where email=#{email}
+	</update>
+	
+	<!-- 根据ID查询单个用户 -->
+	<select id="getUserById" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where id=#{id}
+	</select>
+	
+	<!-- 根据手机查询单个用户 -->
+	<select id="getUserByIphone" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where iphone=#{iphone}
+	</select>
+	
+	<!-- 根据邮箱查询单个用户 -->
+	<select id="getUserByEmail" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where email=#{email}
+	</select>
+	
+	<!-- 根据姓名查询单个用户 -->
+	<select id="getUserByName" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where name like '%' #{name} '%'
+	</select>
+	
+	<!-- 根据角色ID查询用户所有资料 -->
+	<select id="getUserByRoleid" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where roleid=#{roleid}
+	</select>
+	
+	<!-- 根据专业查询用户所有资料 -->
+	<select id="getUserByProfessional" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select * from users where professional like '%' #{professional} '%'
+	</select>
+	
+	<!-- 根据角色roleid和专业查询用户所有资料 -->
+	<select id="getUserByRoleid_professional" parameterType="com.ye.domain.UserBean"
+		resultType="com.ye.domain.UserBean">
+		select id,name from users where roleid=#{roleid} and professional=#{professional}
+	</select>
+	
+	
+	<!-- 查询全部用户 -->
+	<select id="getAllUsers" resultType="com.ye.domain.UserBean">
+		select * from users
+	</select>
+</mapper>

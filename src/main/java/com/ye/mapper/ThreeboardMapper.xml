@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.ThreeboardMapper">
+    <!-- 创建目录(Create) -->
+	<insert id="addThreeboard" parameterType="com.ye.domain.ThreeboardBean">
+		insert into
+		threeboard(three_title,three_two_id,three_profile)
+		values(#{three_title},#{three_two_id},#{three_profile})
+	</insert>
+
+	<!-- 删除目录(Remove) -->
+	<delete id="deleteThreeboard" parameterType="int">
+		delete from threeboard
+		where three_id=#{three_id}
+	</delete>
+
+	<!-- 修改目录(Update) -->
+	<update id="updateThreeboard" parameterType="com.ye.domain.ThreeboardBean">
+		update threeboard set
+		three_title=#{three_title},three_profile=#{three_profile}
+		where three_id=#{three_id}
+	</update>
+	
+	<!-- 查询单个目录 -->
+	<select id="getThreeboard" parameterType="com.ye.domain.ThreeboardBean"
+		resultType="com.ye.domain.ThreeboardBean">
+		select * from threeboard where three_title like '%' #{three_title} '%'
+	</select>
+	
+	<!-- 根据课程id查询所属目录 -->
+	<select id="getThreeboard_Bytwoid" resultType="com.ye.domain.ThreeboardBean">
+		select * from threeboard where three_two_id=#{three_two_id}
+	</select>
+	
+	<!-- 根据课程id获取最热门的章节 -->
+	<select id="getThreeboardTop_Bytwoid" resultType="com.ye.domain.ThreeboardBean">
+	    SELECT * FROM threeboard where three_id = 
+	    (SELECT  comment_three_id FROM `comment` WHERE comment_two_id = #{three_two_id}
+	    GROUP BY comment_three_id ORDER BY COUNT(*) DESC LIMIT 1)
+	</select>
+	<!-- 根据章节id查课程 -->
+	<select id="getThreeboardthree_id" parameterType="com.ye.domain.ThreeboardBean"
+		resultType="com.ye.domain.ThreeboardBean">
+		select * from threeboard where three_id =#{three_id}
+	</select>
+
+	<!-- 统计评论总数前五的章节-->
+	<select id="three_statistics_five" resultType="com.ye.domain.ThreeboardBean">
+	SELECT * FROM threeboard WHERE three_id in
+    (select t.three_id from (SELECT COUNT(*) AS three_statistics,comment_three_id three_id FROM comment GROUP BY comment_three_id HAVING three_statistics ORDER BY three_statistics DESC  LIMIT 5)as t)
+    ORDER BY field(three_id,'t.three_id')
+    </select>
+	<!-- 查询全部目录-->
+	<select id="getAllThreeboard" resultType="com.ye.domain.ThreeboardBean">
+		select * from threeboard
+	</select>
+	<!-- 更新threeboard表中统计数据 -->
+	<update id="updateThree_statistics">
+	    UPDATE threeboard SET threeboard.three_statistics = (SELECT COUNT(*) FROM `comment` WHERE 
+	    `comment`.comment_three_id = threeboard.three_id GROUP BY `comment`.comment_three_id) 
+	    WHERE threeboard.three_id in (
+	    SELECT `comment`.comment_three_id FROM `comment` GROUP BY `comment`.comment_three_id)
+	</update>
+</mapper>

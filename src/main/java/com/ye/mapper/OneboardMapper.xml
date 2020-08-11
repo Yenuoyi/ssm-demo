@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.OneboardMapper">
+    <!-- 创建专业(Create) -->
+	<insert id="addOneboard" parameterType="com.ye.domain.OneboardBean">
+		insert into oneboard(one_title) values(#{one_title})
+	</insert>
+
+	<!-- 删除专业(Delete) -->
+	<delete id="deleteOneboardById" parameterType="com.ye.domain.OneboardBean">
+		delete from oneboard 
+		where one_id=#{one_id}
+	</delete >
+
+	<!-- 修改专业(Update) -->
+	<update id="updateOneboard" parameterType="com.ye.domain.OneboardBean">
+		update oneboard set
+		one_title=#{one_title} where one_id=#{one_id}
+	</update>
+
+	<!-- 根据专业名查询指定专业 -->
+	<select id="getOneboardBytitle" parameterType="com.ye.domain.OneboardBean"
+		resultType="com.ye.domain.OneboardBean">
+		select * from oneboard where one_title like '%' #{one_title} '%'
+	</select>
+	
+	<!-- 根据专业id查询指定专业 -->
+	<select id="getOneboardByid" parameterType="com.ye.domain.OneboardBean"
+		resultType="com.ye.domain.OneboardBean">
+		select * from oneboard where one_id=#{one_id}
+	</select>
+	<!-- 查询全部专业 -->
+	<select id="getAllOneboard" resultType="com.ye.domain.OneboardBean">
+		select * from oneboard
+	</select>
+	
+</mapper>

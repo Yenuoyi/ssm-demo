@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="smsSendService" class="com.ye.emailstatistics.SendEmailStatis"/>
+    <!-- 定时器1 -->
+    <bean id="smsSendServiceJobOne" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
+        p:targetObject-ref="smsSendService" p:targetMethod="autoSmsTime" p:concurrent="false"/>
+    <bean id="smsSendServiceTriggerOne" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"
+        p:jobDetail-ref="smsSendServiceJobOne" p:cronExpression="0 0 5 ? * MON"/>
+    <!-- 10S发送  "0/10 * * * * ?" -->
+    
+    <!-- 定时每天早上5点自动统计课程评论数 -->
+    <bean id="autoStatisTwoComment" class="com.ye.emailstatistics.CommentAutoStatis"/>
+    <!-- 定时器 -->
+    <bean id="autoStatisTwo" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
+        p:targetObject-ref="autoStatisTwoComment" p:targetMethod="autoStaticsTwoComment" p:concurrent="false"/>
+    <bean id="statisTwo" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"
+        p:jobDetail-ref="autoStatisTwo" p:cronExpression="0 0 5 * * ?"/>
+    
+    <!-- 监听器 -->
+    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+        <property name="triggers">
+            <list>
+                <ref bean="smsSendServiceTriggerOne" />
+                <ref bean="statisTwo" />
+            </list> 
+        </property>
+    </bean>
+    
+
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ye.dao.CommentMapper">
+    <!-- 创建评论(Create) -->
+	<insert id="addComment" parameterType="com.ye.domain.CommentBean">
+		insert into
+		comment(comment_name,comment_name_id,comment_two_id,comment_three_id,comment_content,comment_name_url,roleid) 
+		values(#{comment_name},#{comment_name_id},#{comment_two_id},#{comment_three_id},#{comment_content},#{comment_name_url},#{roleid})
+	</insert>
+	<!-- 创建回复(Create) -->
+	<insert id="addReply" parameterType="com.ye.domain.ReplyBean">
+		insert into
+		reply(reply_name,reply_name_id,reply_name_url,reply_two_id,reply_three_id,reply_content,reply_comment_id,reply_comment_name,reply_comment_name_id,roleid) 
+		values(#{reply_name},#{reply_name_id},#{reply_name_url},#{reply_two_id},
+		#{reply_three_id},#{reply_content},#{reply_comment_id},#{reply_comment_name},#{reply_comment_name_id},#{roleid})
+	</insert>
+	<!-- 删除评论(Remove) -->
+	<delete id="deleteComment" parameterType="int">
+		delete from comment
+		where comment_id=#{comment_id}
+	</delete>
+	<update id="updateCommentname">
+	    UPDATE comment SET
+		comment_name = #{comment_name} WHERE comment_name_id = #{comment_name_id}
+	</update>
+
+	<!-- 查询特定目录共有多少条评论 -->
+	<select id="getTotal" parameterType="com.ye.domain.CommentBean"
+		resultType="int">
+	    SELECT COUNT(comment_three_id) AS comment_three_id FROM `comment` WHERE comment_three_id = #{comment_three_id}
+	</select>
+	
+		<!-- 根据所评论的目录id查询指定评论 -->
+	<select id="getComment" parameterType="com.ye.domain.CommentBean"
+		resultType="com.ye.domain.CommentBean">
+		select * from comment where comment_three_id=#{comment_three_id} order by comment_id desc LIMIT #{start},#{end}
+	</select>
+	<!-- 查询回复表 -->
+	<select  id="getReply" resultType="com.ye.domain.ReplyBean">
+	    SELECT reply_name,reply_name_id,reply_name_url,reply_content,reply_createtime,reply_comment_id,reply_comment_name FROM reply 
+	    where reply_three_id = #{reply_three_id} AND reply_comment_id in
+	    <foreach collection="commentIdList" open="(" close=")" item="reply_comment_id" separator=",">
+            #{reply_comment_id}
+        </foreach>
+	    order by reply_comment_id desc
+	</select>
+</mapper>
