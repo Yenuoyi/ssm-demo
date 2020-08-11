@@ -17,7 +17,7 @@
     <mybatis.version>3.2.6</mybatis.version>
     <!-- log4j日志文件管理包版本 -->
     <slf4j.version>1.7.7</slf4j.version>
-    <log4j.version>2.13.3</log4j.version>
+    <log4j.version>1.2.17</log4j.version>
     <!-- vert.x版本 -->
     <vertx-version>3.5.2</vertx-version>
 </properties>
@@ -30,10 +30,7 @@
     
     <dependency>  
         <groupId>org.codehaus.jackson</groupId>  
-        <artifactId>jackson-mapper-asl</artifactId>  
-        <version>1.9.8</version>  
-        <type>jar</type>  
-        <scope>compile</scope>  
+        <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
 
     <dependency>
@@ -252,7 +249,7 @@
     <dependency>
        <groupId>com.auth0</groupId>
        <artifactId>java-jwt</artifactId>
-       <version>3.3.0</version>
+       <version>3.10.3</version>
     </dependency>
 	<!--
     <dependency>
